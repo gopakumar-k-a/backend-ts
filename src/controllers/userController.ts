@@ -5,14 +5,13 @@ import { userValidator } from "../validators/userValidator";
 import { ExtendedRequest } from "../middlewares/verifyAccessToken";
 import FormData from "../models/FormModel";
 import path from "path";
+import { ValidateHuman } from "../utils/validateHuman";
 export const userController = {
   changePassword: async (
     req: ExtendedRequest,
     res: Response
   ): Promise<void> => {
     try {
-      console.log("hello hi");
-
       const errors = userValidator.validateChangePassword(req.body);
       console.log("errors ", errors);
 
@@ -65,13 +64,8 @@ export const userController = {
         ? (req.files as Express.Multer.File[])
         : [];
 
-      console.log("req body ", req.body);
-      console.log("req file ", req.files);
       const formErrors = userValidator.validateFormData(req.body);
       const fileErrors = userValidator.validateFileUploads(files);
-
-      console.log("fileerrors ", fileErrors);
-      console.log("formErrors ", formErrors);
 
       if (formErrors.length > 0 || fileErrors.length > 0) {
         res.status(400).json({
@@ -93,8 +87,18 @@ export const userController = {
         radio,
         textarea,
         select,
+        token,
       } = req.body;
 
+      const humanResult = await ValidateHuman(token);
+
+      if (!humanResult.success) {
+        res.status(500).json({
+          error: "token verification failed",
+          errorCodes: humanResult["error-codes"],
+        });
+        return;
+      }
       const newFormData = new FormData({
         text,
         email,
