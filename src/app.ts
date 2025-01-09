@@ -4,8 +4,11 @@ import helmet from "helmet";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import authRouter from "./routes/authRoutes";
+import userRouter from './routes/userRoutes'
+import { verifyAccessToken } from "./middlewares/verifyAccessToken";
 import { connectDB } from "./config/database";
 import dotenv from "dotenv";
+import path from "path";
 
 dotenv.config();
 
@@ -19,8 +22,9 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use("/api/auth", authRouter);
+app.use("/api/user",verifyAccessToken, userRouter);
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

@@ -3,10 +3,9 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 dotenv.config();
 
-// Define a type for the result returned by the verification functions
-interface VerificationResult {
+export interface VerificationResult {
   valid: boolean;
-  decoded?: JwtPayload; // Decoded token is of type JwtPayload
+  decoded?: JwtPayload; 
   error?: string;
 }
 

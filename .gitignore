@@ -130,3 +130,6 @@ temp/
 # Additional artifacts
 *.log
 debug.log
+
+# Ignore the public folder inside src
+/src/public/
