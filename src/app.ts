@@ -13,7 +13,7 @@ const app: Express = express();
 
 connectDB();
 
-app.use(cors());
+app.use(cors({ origin: process.env.FRONT_END_ORIGIN }));
 app.use(helmet());
 app.use(morgan("dev"));
 app.use(express.json());
@@ -21,11 +21,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
-// app.get('/',(req:Request, res:Response) => {
-//   console.log('hello');
-
-//   res.status(200).json({ message: "success" });
-// });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error(err.stack);

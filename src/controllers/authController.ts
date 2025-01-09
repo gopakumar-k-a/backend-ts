@@ -8,11 +8,12 @@ import { tokenVerifier } from "../helpers/tokenVerifier";
 export const authController = {
   registerUser: async (req: Request, res: Response): Promise<void> => {
     try {
-      console.log('hello hi');
+      console.log("hello hi");
       console.log(req.body);
-      
-      
+
       const errors = authValidator.validateRegister(req.body);
+      console.log('errors ',errors);
+      
       if (errors.length) {
         res.status(400).json({ errors });
         return;
@@ -78,7 +79,10 @@ export const authController = {
       const refreshToken = tokenGenerator.generateRefreshToken(
         user._id as string
       );
-
+      const loginUser = {
+        name: user.name,
+        userName: user.userName,
+      };
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
         sameSite: "none",
@@ -86,7 +90,7 @@ export const authController = {
         maxAge: 24 * 60 * 60 * 1000, // 1 day
       });
 
-      res.json({ accessToken });
+      res.json({ message: "login success", accessToken, user: loginUser });
     } catch (error) {
       console.error("Error during login:", error);
       res.status(500).json({ error: "Failed to login" });
@@ -110,7 +114,7 @@ export const authController = {
         const accessToken = tokenGenerator.generateAccessToken(
           verificationResult.decoded.id as string
         );
-        res.json({ accessToken });
+        res.json({ message: "generated token success", accessToken });
       } else {
         res.status(406).json({ message: "Unauthorized" });
       }

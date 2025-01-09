@@ -46,7 +46,7 @@ interface RegisterPayload {
     validateLogin: ({  userName, password }: LoginPayload): string[] => {
       const errors: string[] = [];
   
-      if (! userName) errors.push("Email is required");
+      if (! userName) errors.push("userName is required");
       if (!password) errors.push("Password is required");
   
       return errors;
